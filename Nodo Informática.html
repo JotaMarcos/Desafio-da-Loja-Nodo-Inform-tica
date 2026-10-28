@@ -1,0 +1,593 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Nodo Informática</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: painel de patch. Abas viram portas com LED, conteúdo em faixas modulares com filetes técnicos. */
+:root {
+  --bg: #eef2f5;
+  --surface: #ffffff;
+  --soft: #e1eaf1;
+  --ink: #101c26;
+  --muted: #4d6076;
+  --line: #d0dae3;
+  --accent: #0a62a8;
+  --accent-ink: #ffffff;
+  --led: #e87a00;
+  --ok: #17784a;
+  --f-display: "Chakra Petch", "Segoe UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c141b; --surface: #131e27; --soft: #1a2833; --ink: #e7eef4; --muted: #9bb0c2;
+    --line: #26353f; --accent: #58b4f0; --accent-ink: #06121b; --led: #ffa21f; --ok: #4fd08f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c141b; --surface: #131e27; --soft: #1a2833; --ink: #e7eef4; --muted: #9bb0c2;
+  --line: #26353f; --accent: #58b4f0; --accent-ink: #06121b; --led: #ffa21f; --ok: #4fd08f;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 400 16px/1.6 var(--f-body);
+}
+.wrap {
+  width: 100%; max-width: 1120px; margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { font-family: var(--f-display); font-weight: 600; line-height: 1.15; margin: 0; text-wrap: balance; letter-spacing: -0.005em; }
+h1 { font-size: clamp(1.9rem, 5.2vw, 3.1rem); font-weight: 700; }
+h2 { font-size: clamp(1.4rem, 3.2vw, 1.9rem); }
+h3 { font-size: 1.05rem; }
+p { margin: 0; }
+a { color: var(--accent); }
+button, input, select, textarea { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.eyebrow { font: 500 0.75rem/1 var(--f-mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+
+/* topo */
+.top { background: var(--surface); border-bottom: 1px solid var(--line); }
+.top-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 16px 12px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); }
+.brand svg { width: 44px; height: 44px; flex: none; }
+.brand b { display: block; font: 700 1.3rem/1 var(--f-display); letter-spacing: 0.01em; }
+.brand small { display: block; font: 500 0.68rem/1.4 var(--f-mono); letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
+.cart-btn { display: inline-flex; align-items: center; gap: 10px; border: 1px solid var(--line); background: var(--bg); padding: 8px 14px; border-radius: 6px; cursor: pointer; font-weight: 500; }
+.cart-btn:hover { border-color: var(--accent); }
+.cart-btn .n { min-width: 24px; height: 24px; padding: 0 6px; display: inline-grid; place-items: center; background: var(--accent); color: var(--accent-ink); border-radius: 12px; font: 500 0.8rem/1 var(--f-mono); font-variant-numeric: tabular-nums; }
+.tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; padding-bottom: 14px; }
+.tab { position: relative; text-align: left; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 20px 12px 10px; cursor: pointer; font: 600 0.95rem/1.2 var(--f-display); letter-spacing: 0.02em; color: var(--muted); }
+.tab::before { content: ""; position: absolute; top: 8px; left: 12px; width: 8px; height: 8px; border-radius: 50%; background: var(--line); }
+.tab:hover { border-color: var(--accent); color: var(--ink); }
+.tab[aria-selected="true"] { background: var(--surface); border-color: var(--accent); color: var(--ink); box-shadow: inset 0 -3px 0 var(--accent); }
+.tab[aria-selected="true"]::before { background: var(--led); box-shadow: 0 0 0 3px color-mix(in srgb, var(--led) 28%, transparent); }
+
+/* faixas */
+main { padding-block: 32px 56px; display: block; }
+.panel[hidden] { display: none !important; }
+.band { padding-block: 28px; border-top: 1px solid var(--line); display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 16px 32px; }
+.band:first-child { border-top: 0; padding-top: 0; }
+.band > .eyebrow { padding-top: 6px; }
+.stack { display: grid; gap: 16px; min-width: 0; }
+.lead { font-size: 1.12rem; max-width: 60ch; color: var(--ink); }
+.prose { max-width: 65ch; color: var(--muted); }
+
+/* hero */
+.hero { display: grid; gap: 24px; padding-bottom: 32px; }
+.hero h1 { max-width: 18ch; }
+.hero .lead { color: var(--muted); }
+.ports { background: #16222c; border: 1px solid #2a3b48; border-radius: 6px; padding: 12px; display: grid; gap: 8px; max-width: 100%; }
+.ports-row { display: grid; grid-template-columns: repeat(12, 1fr); gap: 6px; }
+.port { aspect-ratio: 1.25; background: #0a1118; border: 1px solid #33485a; border-radius: 2px; position: relative; }
+.port::after { content: ""; position: absolute; top: 3px; right: 3px; width: 4px; height: 4px; border-radius: 50%; background: #2a3b48; }
+.port.on::after { background: #ffa21f; box-shadow: 0 0 6px #ffa21f; }
+.port.ok::after { background: #4fd08f; box-shadow: 0 0 6px #4fd08f; }
+.ports-cap { font: 500 0.68rem/1 var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: #8aa0b2; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink); padding: 10px 18px; border-radius: 6px; cursor: pointer; font-weight: 600; text-decoration: none; }
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn.small { padding: 7px 12px; font-size: 0.9rem; }
+.btn[disabled] { opacity: 0.45; cursor: not-allowed; filter: none; }
+
+/* linhas na empresa */
+.cols3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.cell { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 18px; display: grid; gap: 8px; align-content: start; }
+.cell p { color: var(--muted); font-size: 0.95rem; }
+.rules { display: grid; gap: 0; margin: 0; }
+.rules div { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 4px 24px; padding-block: 14px; border-top: 1px solid var(--line); }
+.rules div:first-child { border-top: 0; padding-top: 0; }
+.rules dt { font: 600 1rem/1.3 var(--f-display); }
+.rules dd { margin: 0; color: var(--muted); }
+.hours { display: grid; grid-template-columns: auto 1fr; gap: 6px 20px; margin: 0; }
+.hours dt { color: var(--muted); }
+.hours dd { margin: 0; font-variant-numeric: tabular-nums; }
+
+/* produtos */
+.tools { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 24px; }
+.search { flex: 1 1 240px; min-width: 0; border: 1px solid var(--line); background: var(--surface); border-radius: 6px; padding: 10px 14px; }
+.chips { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 7px 14px; cursor: pointer; font-size: 0.92rem; }
+.chip:hover { border-color: var(--accent); }
+.chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.line-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: 8px 0 14px; }
+.line-head p { color: var(--muted); font-size: 0.95rem; }
+.line-block { margin-bottom: 36px; }
+.grid4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; display: grid; grid-template-rows: auto 1fr auto; min-width: 0; }
+.tile { background: var(--soft); color: var(--accent); display: grid; place-items: center; padding: 18px 12px 12px; border-bottom: 1px solid var(--line); border-radius: 6px 6px 0 0; }
+.tile svg { width: 100%; max-width: 120px; height: auto; }
+.card-body { padding: 14px 14px 6px; display: grid; gap: 6px; align-content: start; }
+.sku { font: 400 0.72rem/1 var(--f-mono); letter-spacing: 0.08em; color: var(--muted); }
+.card-body p { color: var(--muted); font-size: 0.9rem; line-height: 1.5; }
+.card-foot { padding: 10px 14px 14px; display: grid; gap: 10px; }
+.price { font: 600 1.2rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
+.price small { font: 400 0.75rem/1 var(--f-body); color: var(--muted); display: block; margin-top: 4px; }
+.empty { padding: 32px; border: 1px dashed var(--line); border-radius: 6px; color: var(--muted); text-align: center; }
+
+/* pedido */
+.order { margin-top: 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 20px; display: grid; gap: 14px; scroll-margin-top: 16px; }
+.order-list { display: grid; gap: 0; }
+.order-item { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px 16px; align-items: center; padding-block: 10px; border-top: 1px solid var(--line); }
+.order-item:first-child { border-top: 0; }
+.order-item .nm { min-width: 0; overflow-wrap: anywhere; }
+.qty { display: inline-flex; align-items: center; border: 1px solid var(--line); border-radius: 6px; }
+.qty button { width: 32px; height: 32px; border: 0; background: transparent; cursor: pointer; font-size: 1.1rem; }
+.qty button:hover { background: var(--soft); }
+.qty span { min-width: 28px; text-align: center; font-variant-numeric: tabular-nums; }
+.sub { font-variant-numeric: tabular-nums; font-weight: 600; text-align: right; min-width: 100px; }
+.order-total { display: flex; justify-content: space-between; align-items: baseline; border-top: 2px solid var(--ink); padding-top: 12px; font: 600 1.2rem/1 var(--f-display); font-variant-numeric: tabular-nums; }
+
+/* contato */
+.contact { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+.form { display: grid; gap: 14px; background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 20px; }
+.field { display: grid; gap: 6px; }
+.field label { font-weight: 500; font-size: 0.92rem; }
+.field input, .field select, .field textarea { width: 100%; border: 1px solid var(--line); background: var(--bg); border-radius: 6px; padding: 10px 12px; }
+.field textarea { min-height: 140px; resize: vertical; }
+.field .err { color: #c2371d; font-size: 0.85rem; min-height: 1em; }
+:root[data-theme="dark"] .field .err { color: #ff8f78; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .field .err { color: #ff8f78; } }
+.channels { display: grid; gap: 0; }
+.channel { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; padding-block: 14px; border-top: 1px solid var(--line); }
+.channel:first-child { border-top: 0; padding-top: 0; }
+.channel .k { font: 500 0.72rem/1 var(--f-mono); letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); grid-column: 1 / -1; }
+.channel .v { font: 500 1rem/1.3 var(--f-mono); overflow-wrap: anywhere; }
+.result { border: 1px solid var(--ok); border-radius: 6px; padding: 16px; display: grid; gap: 12px; background: var(--surface); }
+.result pre { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font: 400 0.88rem/1.5 var(--f-mono); background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 12px; }
+.result .note { color: var(--muted); font-size: 0.92rem; }
+
+/* faq */
+.faq { display: grid; gap: 0; max-width: 780px; }
+.faq details { border-top: 1px solid var(--line); padding-block: 4px; }
+.faq details:last-child { border-bottom: 1px solid var(--line); }
+.faq summary { cursor: pointer; list-style: none; padding: 14px 0; font: 600 1.05rem/1.35 var(--f-display); display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font: 400 1.4rem/1 var(--f-mono); color: var(--accent); flex: none; }
+.faq details[open] summary::after { content: "–"; }
+.faq .ans { padding: 0 0 16px; color: var(--muted); max-width: 65ch; }
+
+/* rodapé */
+footer { border-top: 1px solid var(--line); background: var(--surface); }
+.foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-block: 24px; color: var(--muted); font-size: 0.88rem; }
+.foot .brand b { font-size: 1.05rem; }
+
+@media (max-width: 999px) {
+  .grid4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .contact { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 760px) {
+  .band { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .cols3 { grid-template-columns: minmax(0, 1fr); }
+  .rules div { grid-template-columns: minmax(0, 1fr); }
+  .tabs { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 479px) {
+  .grid4 { grid-template-columns: minmax(0, 1fr); }
+  .order-item { grid-template-columns: minmax(0, 1fr) auto; }
+  .order-item .sub { grid-column: 1 / -1; text-align: left; }
+  .ports-row { gap: 4px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tab, .btn, .chip, .card { transition: border-color .15s, background-color .15s, filter .15s; }
+}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <div class="top-row">
+      <a class="brand" href="#empresa" aria-label="Nodo Informática, página inicial">
+        <svg viewBox="0 0 48 48" role="img" aria-label="Logomarca Nodo Informática">
+          <rect x="2" y="2" width="44" height="44" rx="8" fill="var(--accent)"/>
+          <path d="M14 35V13l20 22V13" fill="none" stroke="var(--accent-ink)" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="14" cy="13" r="4.2" fill="var(--accent-ink)"/>
+          <circle cx="34" cy="35" r="4.2" fill="var(--accent-ink)"/>
+          <circle cx="34" cy="13" r="3" fill="var(--led)"/>
+        </svg>
+        <span><b>Nodo</b><small>Informática e redes</small></span>
+      </a>
+      <button class="cart-btn" id="cartTop" type="button">Meu pedido <span class="n" id="cartCount">0</span></button>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Seções do site">
+      <button class="tab" role="tab" id="t-empresa" data-tab="empresa" aria-controls="aba-empresa">A empresa</button>
+      <button class="tab" role="tab" id="t-produtos" data-tab="produtos" aria-controls="aba-produtos">Produtos</button>
+      <button class="tab" role="tab" id="t-contato" data-tab="contato" aria-controls="aba-contato">Contato</button>
+      <button class="tab" role="tab" id="t-faq" data-tab="faq" aria-controls="aba-faq">Perguntas frequentes</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- EMPRESA -->
+  <section class="panel" id="aba-empresa" role="tabpanel" aria-labelledby="t-empresa">
+    <div class="hero">
+      <span class="eyebrow">Loja de informática e infraestrutura de rede</span>
+      <h1>Equipamento certo para a sua empresa funcionar amanhã cedo.</h1>
+      <p class="lead">A Nodo vende computadores, redes e proteção de dados para pequenas e médias empresas. Indicamos o que o seu negócio usa de verdade e deixamos o resto de fora.</p>
+      <div class="cta-row">
+        <button class="btn" type="button" data-go="produtos">Ver produtos</button>
+        <button class="btn ghost" type="button" data-go="contato">Pedir orçamento</button>
+      </div>
+      <div class="ports" aria-hidden="true">
+        <div class="ports-row" id="portsA"></div>
+        <div class="ports-row" id="portsB"></div>
+        <div class="ports-cap"><span>Switch gerenciável 24 portas</span><span>Gigabit · VLAN</span></div>
+      </div>
+    </div>
+
+    <div class="band">
+      <span class="eyebrow">Quem somos</span>
+      <div class="stack">
+        <p class="lead">A Nodo é uma loja de informática voltada ao comércio e aos escritórios. Vendemos pela internet e também montamos a rede interna do cliente, do cabo ao backup.</p>
+        <p class="prose">Trabalhamos com linhas para empresas (SMB), que trazem controle de banda, segmentação por VLAN e garantia de balcão. Equipamento doméstico fica fora do catálogo de redes.</p>
+      </div>
+    </div>
+
+    <div class="band">
+      <span class="eyebrow">O que vendemos</span>
+      <div class="cols3">
+        <div class="cell"><h3>Computadores e notebooks</h3><p>Máquinas de trabalho para balcão, escritório e home office, com monitor e mini PC.</p></div>
+        <div class="cell"><h3>Redes e conectividade</h3><p>Switches, Wi-Fi corporativo, roteadores e cabeamento CAT6.</p></div>
+        <div class="cell"><h3>Armazenamento e proteção</h3><p>NAS, nobreak senoidal, SSD e discos externos para backup.</p></div>
+      </div>
+    </div>
+
+    <div class="band">
+      <span class="eyebrow">Como trabalhamos</span>
+      <dl class="rules">
+        <div><dt>Rede com folga de 30% a 50%</dt><dd>Eletrocalhas com espaço livre e switches com portas sobrando, para contratar gente sem trocar equipamento.</dd></div>
+        <div><dt>Tudo documentado</dt><dd>Entregamos o mapa de cabeamento, a tabela de IPs e as senhas de administração ao dono da empresa.</dd></div>
+        <div><dt>Servidor do tamanho da necessidade</dt><dd>Servidor de entrada para domínio e aplicações, ou NAS quando o uso é guardar e compartilhar arquivos.</dd></div>
+        <div><dt>Backup 3-2-1</dt><dd>Três cópias dos dados, duas mídias locais diferentes e uma cópia criptografada na nuvem.</dd></div>
+      </dl>
+    </div>
+
+    <div class="band">
+      <span class="eyebrow">Atendimento</span>
+      <dl class="hours">
+        <dt>Segunda a sexta</dt><dd>8h às 18h</dd>
+        <dt>Sábado</dt><dd>8h às 12h</dd>
+        <dt>Pedidos pelo site</dt><dd>Recebidos todos os dias</dd>
+      </dl>
+    </div>
+  </section>
+
+  <!-- PRODUTOS -->
+  <section class="panel" id="aba-produtos" role="tabpanel" aria-labelledby="t-produtos" hidden>
+    <div class="tools">
+      <input class="search" id="q" type="search" placeholder="Buscar produto, por exemplo switch ou SSD" aria-label="Buscar produto">
+      <div class="chips" id="chips" role="group" aria-label="Filtrar por linha"></div>
+    </div>
+    <div id="catalogo"></div>
+
+    <div class="order" id="pedidoPainel">
+      <div class="line-head" style="margin:0">
+        <h2>Meu pedido</h2>
+        <p id="orderHint">Adicione produtos para montar a solicitação.</p>
+      </div>
+      <div class="order-list" id="orderList"></div>
+      <div class="order-total" id="orderTotal" hidden><span>Total</span><span id="totalVal"></span></div>
+      <div class="cta-row">
+        <button class="btn" type="button" id="toContact" disabled>Solicitar pedido</button>
+        <button class="btn ghost" type="button" id="clearCart" disabled>Limpar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATO -->
+  <section class="panel" id="aba-contato" role="tabpanel" aria-labelledby="t-contato" hidden>
+    <div class="line-head" style="margin-top:0">
+      <h2>Fale com a Nodo</h2>
+      <p>Dúvidas, orçamentos e pedidos.</p>
+    </div>
+    <div class="contact">
+      <form class="form" id="form" novalidate>
+        <div class="field">
+          <label for="f-nome">Nome</label>
+          <input id="f-nome" name="nome" type="text" autocomplete="name">
+          <span class="err" id="e-nome"></span>
+        </div>
+        <div class="field">
+          <label for="f-email">E-mail</label>
+          <input id="f-email" name="email" type="email" autocomplete="email">
+          <span class="err" id="e-email"></span>
+        </div>
+        <div class="field">
+          <label for="f-assunto">Assunto</label>
+          <select id="f-assunto" name="assunto">
+            <option>Orçamento</option>
+            <option>Pedido de compra</option>
+            <option>Projeto de rede</option>
+            <option>Suporte e garantia</option>
+            <option>Outro assunto</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="f-msg">Mensagem</label>
+          <textarea id="f-msg" name="msg"></textarea>
+          <span class="err" id="e-msg"></span>
+        </div>
+        <button class="btn" type="submit">Montar mensagem</button>
+        <div class="result" id="result" hidden>
+          <h3>Mensagem pronta</h3>
+          <pre id="resultText"></pre>
+          <p class="note">Este site não envia e-mails. Copie a mensagem e mande para o endereço de contato ao lado ou pelo WhatsApp.</p>
+          <div class="cta-row"><button class="btn small" type="button" id="copyResult">Copiar mensagem</button></div>
+        </div>
+      </form>
+      <div class="stack">
+        <div class="channels">
+          <div class="channel"><span class="k">WhatsApp</span><span class="v" id="c-wa">(51) 99000-0000</span><button class="btn small ghost" type="button" data-copy="c-wa">Copiar</button></div>
+          <div class="channel"><span class="k">Telefone</span><span class="v" id="c-tel">(51) 3000-0000</span><button class="btn small ghost" type="button" data-copy="c-tel">Copiar</button></div>
+          <div class="channel"><span class="k">E-mail</span><span class="v" id="c-mail">contato@nodoinformatica.com.br</span><button class="btn small ghost" type="button" data-copy="c-mail">Copiar</button></div>
+        </div>
+        <p class="prose">Respondemos em até um dia útil. Para projeto de rede, informe quantos computadores, impressoras e pontos de Wi-Fi a empresa tem hoje.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="panel" id="aba-faq" role="tabpanel" aria-labelledby="t-faq" hidden>
+    <div class="line-head" style="margin-top:0">
+      <h2>Perguntas frequentes</h2>
+    </div>
+    <div class="faq">
+      <details open><summary>Como faço um pedido?</summary><div class="ans">Na aba Produtos, adicione os itens ao pedido e clique em Solicitar pedido. A mensagem já sai com a lista e o total. Depois é só enviá-la pelo WhatsApp ou pelo e-mail da loja.</div></details>
+      <details><summary>Quais são as formas de pagamento?</summary><div class="ans">Pix, boleto, cartão de crédito em até 10 vezes e faturamento para empresas com cadastro aprovado.</div></details>
+      <details><summary>Qual é o prazo de entrega?</summary><div class="ans">Itens em estoque saem em até 2 dias úteis. Equipamentos de rede sob encomenda levam de 5 a 10 dias úteis, e avisamos o prazo no orçamento.</div></details>
+      <details><summary>Os produtos têm garantia e nota fiscal?</summary><div class="ans">Sim. Todos os produtos têm nota fiscal e garantia do fabricante. Equipamentos de linha empresarial costumam ter garantia estendida, informada na página de cada item.</div></details>
+      <details><summary>Vocês instalam a rede da minha empresa?</summary><div class="ans">Fazemos o projeto, o cabeamento e a configuração. A entrega inclui o mapa de cabeamento, a tabela de endereços IP e as senhas dos equipamentos.</div></details>
+      <details><summary>Qual servidor eu devo comprar?</summary><div class="ans">Depende do uso. Para guardar arquivos e fazer backup, um NAS atende bem e gasta menos energia. Para controle de domínio ou sistemas de gestão, indicamos um servidor em torre de entrada.</div></details>
+      <details><summary>Posso trocar um produto?</summary><div class="ans">Compras feitas pelo site podem ser devolvidas em até 7 dias corridos após o recebimento, com o produto lacrado e sem uso.</div></details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Nodo Informática. Site desenvolvido como Projeto Prático III. Produtos, preços e contatos são exemplos.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var brl = function (n) { return n.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); };
+
+  /* ---- painel de portas do hero ---- */
+  var lit = { 0: 'on', 1: 'on', 2: 'ok', 4: 'on', 5: 'ok', 7: 'on', 8: 'on', 11: 'ok', 13: 'ok', 14: 'on', 16: 'on', 19: 'ok', 20: 'on', 22: 'on' };
+  [['portsA', 0], ['portsB', 12]].forEach(function (p) {
+    var h = '';
+    for (var i = 0; i < 12; i++) { h += '<span class="port ' + (lit[p[1] + i] || '') + '"></span>'; }
+    $('#' + p[0]).innerHTML = h;
+  });
+
+  /* ---- dados ---- */
+  var LINHAS = [
+    { id: 'comp', nome: 'Computadores e notebooks', nota: 'Para balcão, escritório e home office' },
+    { id: 'rede', nome: 'Redes e conectividade', nota: 'Linha empresarial com VLAN e gerenciamento' },
+    { id: 'prot', nome: 'Armazenamento e proteção', nota: 'Dados guardados e energia limpa' }
+  ];
+  var PRODUTOS = [
+    { id: 'c1', linha: 'comp', icon: 'laptop', sku: 'NB-PRO14', nome: 'Notebook Pro 14", i5, 16 GB, SSD 512 GB', desc: 'Tela Full HD, teclado com numérico reduzido e bateria para o dia todo.', preco: 4290 },
+    { id: 'c2', linha: 'comp', icon: 'desktop', sku: 'DT-OFFICE', nome: 'Desktop Office, i5, 8 GB, SSD 256 GB', desc: 'Torre compacta para caixa e atendimento, com Windows 11 Pro.', preco: 2890 },
+    { id: 'c3', linha: 'comp', icon: 'minipc', sku: 'MP-R5', nome: 'Mini PC Compacto, Ryzen 5, 16 GB', desc: 'Cabe atrás do monitor e gasta pouca energia. Ideal para recepção.', preco: 2390 },
+    { id: 'c4', linha: 'comp', icon: 'monitor', sku: 'MN-24IPS', nome: 'Monitor 24" Full HD IPS', desc: 'Ângulo de visão aberto, entradas HDMI e DisplayPort, base ajustável.', preco: 849 },
+
+    { id: 'r1', linha: 'rede', icon: 'switch', sku: 'SW-GER24', nome: 'Switch gerenciável Gigabit, 24 portas', desc: 'VLANs, controle de banda e portas sobrando para a empresa crescer.', preco: 1690 },
+    { id: 'r2', linha: 'rede', icon: 'ap', sku: 'AP-W6T', nome: 'Access Point Wi-Fi 6 de teto', desc: 'Rede separada para visitantes e alimentação pelo cabo de rede (PoE).', preco: 780 },
+    { id: 'r3', linha: 'rede', icon: 'router', sku: 'RT-DWAN', nome: 'Roteador dual WAN com VLAN', desc: 'Dois links de internet com troca automática se um cair.', preco: 620 },
+    { id: 'r4', linha: 'rede', icon: 'cable', sku: 'CB-CAT6-305', nome: 'Cabo CAT6, caixa com 305 m', desc: 'Par trançado para pontos de rede Gigabit, com capa antichama.', preco: 690 },
+
+    { id: 'p1', linha: 'prot', icon: 'nas', sku: 'NAS-2B', nome: 'NAS de 2 baias', desc: 'Compartilha arquivos e faz backup automático. Discos vendidos à parte.', preco: 2190 },
+    { id: 'p2', linha: 'prot', icon: 'ups', sku: 'UPS-1500S', nome: 'Nobreak senoidal 1500 VA', desc: 'Energia limpa para servidor e switch, com proteção contra queima.', preco: 2450 },
+    { id: 'p3', linha: 'prot', icon: 'ssd', sku: 'SSD-NV1T', nome: 'SSD NVMe 1 TB', desc: 'Troca o disco antigo e deixa o computador bem mais rápido.', preco: 520 },
+    { id: 'p4', linha: 'prot', icon: 'hdd', sku: 'HD-EXT2T', nome: 'HD externo 2 TB, USB 3.0', desc: 'Segunda mídia local para a cópia de segurança diária.', preco: 489 }
+  ];
+
+  /* ---- ícones de produto ---- */
+  function switchPorts() {
+    var s = '<rect x="4" y="16" width="56" height="18" rx="2"/>';
+    for (var i = 0; i < 8; i++) { s += '<rect x="' + (9 + i * 6.4) + '" y="21" width="4.4" height="6" rx="0.6"/>'; }
+    return s + '<path d="M8 38v4M56 38v4"/>';
+  }
+  var ICONS = {
+    laptop: '<rect x="14" y="8" width="36" height="24" rx="2"/><path d="M6 38h52l-4 5H10z"/>',
+    desktop: '<rect x="6" y="10" width="18" height="30" rx="2"/><path d="M11 16h8"/><circle cx="15" cy="34" r="1.6"/><rect x="30" y="10" width="28" height="20" rx="2"/><path d="M44 30v6M38 36h12"/>',
+    minipc: '<rect x="10" y="18" width="44" height="16" rx="4"/><circle cx="19" cy="26" r="1.8"/><path d="M28 26h18M14 38h36"/>',
+    monitor: '<rect x="8" y="6" width="48" height="30" rx="2"/><path d="M32 36v6M24 42h16"/>',
+    'switch': switchPorts(),
+    ap: '<ellipse cx="32" cy="32" rx="20" ry="7"/><path d="M22 24q10-9 20 0M26 18q6-5 12 0"/><circle cx="32" cy="32" r="1.6"/>',
+    router: '<rect x="8" y="26" width="48" height="12" rx="2"/><path d="M16 26V10M48 26V10"/><circle cx="16" cy="32" r="1.4"/><circle cx="22" cy="32" r="1.4"/><path d="M36 32h14"/>',
+    cable: '<circle cx="30" cy="24" r="16"/><circle cx="30" cy="24" r="8"/><path d="M46 24h12M46 28h10"/>',
+    nas: '<rect x="14" y="6" width="36" height="36" rx="2"/><rect x="19" y="12" width="26" height="10" rx="1"/><rect x="19" y="26" width="26" height="10" rx="1"/><circle cx="41" cy="17" r="1.2"/><circle cx="41" cy="31" r="1.2"/>',
+    ups: '<rect x="12" y="8" width="40" height="32" rx="3"/><path d="M34 14l-9 13h8l-3 11 10-14h-8z"/>',
+    ssd: '<rect x="8" y="12" width="48" height="24" rx="3"/><rect x="18" y="19" width="12" height="10" rx="1"/><path d="M38 20h10M38 24h10M38 28h6"/>',
+    hdd: '<rect x="12" y="6" width="40" height="36" rx="4"/><circle cx="32" cy="24" r="10"/><circle cx="32" cy="24" r="2"/><path d="M32 24l7-5"/>'
+  };
+  function icon(n) {
+    return '<svg viewBox="0 0 64 48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[n] + '</svg>';
+  }
+  function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+
+  /* ---- catálogo ---- */
+  var state = { linha: 'todas', q: '' };
+  var cart = {};
+
+  function renderChips() {
+    var items = [{ id: 'todas', nome: 'Todas as linhas' }].concat(LINHAS);
+    $('#chips').innerHTML = items.map(function (l) {
+      return '<button type="button" class="chip" data-linha="' + l.id + '" aria-pressed="' + (state.linha === l.id) + '">' + esc(l.nome) + '</button>';
+    }).join('');
+  }
+
+  function matches(p) {
+    if (state.linha !== 'todas' && p.linha !== state.linha) return false;
+    if (!state.q) return true;
+    var hay = (p.nome + ' ' + p.desc + ' ' + p.sku).toLowerCase();
+    return hay.indexOf(state.q.toLowerCase()) !== -1;
+  }
+
+  function renderCatalog() {
+    var html = '', any = false;
+    LINHAS.forEach(function (l) {
+      var list = PRODUTOS.filter(function (p) { return p.linha === l.id && matches(p); });
+      if (!list.length) return;
+      any = true;
+      html += '<div class="line-block"><div class="line-head"><h2>' + esc(l.nome) + '</h2><p>' + esc(l.nota) + '</p></div><div class="grid4">';
+      list.forEach(function (p) {
+        html += '<article class="card"><div class="tile">' + icon(p.icon) + '</div>' +
+          '<div class="card-body"><span class="sku">' + esc(p.sku) + '</span><h3>' + esc(p.nome) + '</h3><p>' + esc(p.desc) + '</p></div>' +
+          '<div class="card-foot"><div class="price">' + brl(p.preco) + '<small>ou 10x de ' + brl(p.preco / 10) + '</small></div>' +
+          '<button class="btn small" type="button" data-add="' + p.id + '">Adicionar ao pedido</button></div></article>';
+      });
+      html += '</div></div>';
+    });
+    $('#catalogo').innerHTML = any ? html : '<div class="empty">Nenhum produto encontrado para essa busca.</div>';
+  }
+
+  /* ---- pedido ---- */
+  function findP(id) { return PRODUTOS.filter(function (p) { return p.id === id; })[0]; }
+  function cartTotal() {
+    var t = 0, n = 0;
+    Object.keys(cart).forEach(function (id) { t += findP(id).preco * cart[id]; n += cart[id]; });
+    return { total: t, count: n };
+  }
+  function renderCart() {
+    var ids = Object.keys(cart), c = cartTotal();
+    $('#cartCount').textContent = c.count;
+    $('#orderHint').textContent = ids.length ? c.count + (c.count === 1 ? ' item no pedido' : ' itens no pedido') : 'Adicione produtos para montar a solicitação.';
+    $('#orderList').innerHTML = ids.map(function (id) {
+      var p = findP(id), q = cart[id];
+      return '<div class="order-item"><div class="nm"><strong>' + esc(p.nome) + '</strong><div class="sku">' + esc(p.sku) + '</div></div>' +
+        '<div class="qty"><button type="button" data-dec="' + id + '" aria-label="Diminuir quantidade">−</button><span>' + q + '</span><button type="button" data-inc="' + id + '" aria-label="Aumentar quantidade">+</button></div>' +
+        '<div class="sub">' + brl(p.preco * q) + '</div></div>';
+    }).join('');
+    $('#orderTotal').hidden = !ids.length;
+    $('#totalVal').textContent = brl(c.total);
+    $('#toContact').disabled = !ids.length;
+    $('#clearCart').disabled = !ids.length;
+  }
+  function orderText() {
+    var lines = ['Pedido pelo site da Nodo Informática:', ''];
+    Object.keys(cart).forEach(function (id) {
+      var p = findP(id);
+      lines.push(cart[id] + 'x ' + p.nome + ' (' + p.sku + ') - ' + brl(p.preco * cart[id]));
+    });
+    lines.push('', 'Total: ' + brl(cartTotal().total));
+    return lines.join('\n');
+  }
+
+  /* ---- abas ---- */
+  var NAMES = ['empresa', 'produtos', 'contato', 'faq'];
+  function show(name) {
+    if (NAMES.indexOf(name) === -1) name = 'empresa';
+    NAMES.forEach(function (n) {
+      var on = n === name;
+      $('#aba-' + n).hidden = !on;
+      var t = $('#t-' + n);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+    });
+  }
+  function go(name) {
+    if (location.hash === '#' + name) { show(name); } else { location.hash = name; }
+    window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', function () { show(location.hash.slice(1)); });
+
+  /* ---- copiar ---- */
+  function copyEl(el, btn) {
+    var txt = el.textContent, old = btn.textContent;
+    function done() { btn.textContent = 'Copiado'; setTimeout(function () { btn.textContent = old; }, 1600); }
+    function fallback() {
+      try {
+        var r = document.createRange(); r.selectNodeContents(el);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        btn.textContent = 'Selecionado, use Ctrl+C'; setTimeout(function () { btn.textContent = old; }, 2400);
+      } catch (e) {}
+    }
+    try { navigator.clipboard.writeText(txt).then(done, fallback); } catch (e) { fallback(); }
+  }
+
+  /* ---- eventos ---- */
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest('button, a');
+    if (!t) return;
+    if (t.dataset.tab) { go(t.dataset.tab); return; }
+    if (t.dataset.go) { go(t.dataset.go); return; }
+    if (t.dataset.linha) { state.linha = t.dataset.linha; renderChips(); renderCatalog(); return; }
+    if (t.dataset.add) { cart[t.dataset.add] = (cart[t.dataset.add] || 0) + 1; renderCart(); t.textContent = 'Adicionado'; setTimeout(function () { t.textContent = 'Adicionar ao pedido'; }, 1000); return; }
+    if (t.dataset.inc) { cart[t.dataset.inc]++; renderCart(); return; }
+    if (t.dataset.dec) { cart[t.dataset.dec]--; if (cart[t.dataset.dec] <= 0) delete cart[t.dataset.dec]; renderCart(); return; }
+    if (t.dataset.copy) { copyEl($('#' + t.dataset.copy), t); return; }
+    if (t.id === 'cartTop') { go('produtos'); setTimeout(function () { $('#pedidoPainel').scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 30); return; }
+    if (t.id === 'clearCart') { cart = {}; renderCart(); return; }
+    if (t.id === 'toContact') {
+      $('#f-assunto').value = 'Pedido de compra';
+      $('#f-msg').value = orderText();
+      go('contato');
+      return;
+    }
+    if (t.id === 'copyResult') { copyEl($('#resultText'), t); return; }
+  });
+  $('#q').addEventListener('input', function (e) { state.q = e.target.value.trim(); renderCatalog(); });
+  $('.tabs').addEventListener('keydown', function (e) {
+    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
+    var i = NAMES.indexOf(document.activeElement.dataset.tab);
+    if (i < 0) return;
+    var n = NAMES[(i + (e.key === 'ArrowRight' ? 1 : NAMES.length - 1)) % NAMES.length];
+    go(n); $('#t-' + n).focus();
+  });
+
+  /* ---- formulário ---- */
+  $('#form').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var nome = $('#f-nome').value.trim(), mail = $('#f-email').value.trim(), msg = $('#f-msg').value.trim(), ok = true;
+    $('#e-nome').textContent = nome ? '' : 'Informe seu nome.';
+    $('#e-email').textContent = /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail) ? '' : 'Informe um e-mail válido, como nome@empresa.com.br.';
+    $('#e-msg').textContent = msg ? '' : 'Escreva a mensagem.';
+    if (!nome || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(mail) || !msg) ok = false;
+    if (!ok) { $('#result').hidden = true; return; }
+    $('#resultText').textContent = 'Nome: ' + nome + '\nE-mail: ' + mail + '\nAssunto: ' + $('#f-assunto').value + '\n\n' + msg;
+    $('#result').hidden = false;
+    $('#result').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
+  /* ---- início ---- */
+  renderChips(); renderCatalog(); renderCart();
+  show(location.hash.slice(1));
+})();
+</script>
+
+</body></html>
